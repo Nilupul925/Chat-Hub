@@ -45,7 +45,17 @@ public class StompClient {
         try {
             // This line sends the specified message to the "/app/message" destination on the WebSocket server.
             session.send("/app/message", message);
-            System.out.println("Sent message: " + message.getUser() + ": " + message.getMessage());
+            System.out.println("Sent message from WebSocket server as user: " + message.getUser() + ": " + message.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnectUser(String userName) {
+        try {
+            // This line sends a message to the "/app/disconnect" destination on the WebSocket server, indicating that the user is disconnecting.
+            session.send("/app/disconnect", userName);
+            System.out.println("Disconnected from WebSocket server as user: " + userName);
         } catch (Exception e) {
             e.printStackTrace();
         }

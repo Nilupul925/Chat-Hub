@@ -8,6 +8,7 @@ public class ClientGUI {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         StompClient stompClient = new StompClient("TestUser");
 
-        stompClient.sendMessage(new Message("TestUser", "Hello, World!"));
+        stompClient.sendMessage(new Message("TestUser", "Hello I am connected!"));
+        stompClient.disconnectUser("TestUser");
     }
 }
