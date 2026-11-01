@@ -10,6 +10,11 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import com.chat_hub.chat_hub.model.Message;
 
 public class StompSessionHandler extends StompSessionHandlerAdapter {
+    private String userName;
+
+    public StompSessionHandler(String userName) {
+        this.userName = userName;
+    }
 
     @Override
     // This method is called when the STOMP session is successfully connected. It can be used to perform any necessary setup or initialization after the connection is established.

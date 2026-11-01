@@ -2,6 +2,7 @@ package com.chat_hub.chat_hub.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -19,7 +20,7 @@ public class StompClient {
     private StompSession session;
     private String userName;
 
-    public StompClient(String userName) {
+    public StompClient(String userName) throws InterruptedException, ExecutionException {
         this.userName = userName;
 
         List<Transport> transports = new ArrayList<>();
@@ -31,5 +32,10 @@ public class StompClient {
         WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
         // This line sets the message converter for the STOMP client to use Jackson for JSON serialization and deserialization.
         stompClient.setMessageConverter(new JacksonJsonMessageConverter());
+
+        StompSessionHandler sessionHandler = new StompSessionHandler(userName);
+        // This line connects the STOMP client to the WebSocket server at the specified URL and
+        String url = "ws://localhost:8080/ws";
+        session = stompClient.connectAsync(url, sessionHandler).get();
     }
 }
