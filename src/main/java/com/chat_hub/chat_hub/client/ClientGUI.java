@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class ClientGUI extends JFrame{
     private JPanel connectedUsersPanel, messagePanel;
@@ -55,7 +56,20 @@ public class ClientGUI extends JFrame{
         message.setForeground(Utilities.TEXT_COLOR);
         messagePanel.add(message);
 
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BorderLayout());
+        inputPanel.setBackground(Utilities.SECONDARY_COLOR);
+
+        JTextField messageInputField = new JTextField();
+        messageInputField.setBackground(Utilities.SECONDARY_COLOR);
+        messageInputField.setForeground(Utilities.TEXT_COLOR);
+        messageInputField.setFont(new Font("Inter", Font.PLAIN, 16));
+        messageInputField.setPreferredSize(new Dimension(getWidth(), 40));
+
+        inputPanel.add(messageInputField, BorderLayout.CENTER);
+
         chatPanel.add(messagePanel, BorderLayout.CENTER);
+        chatPanel.add(inputPanel, BorderLayout.SOUTH);
 
         add(chatPanel, BorderLayout.CENTER);
     }
