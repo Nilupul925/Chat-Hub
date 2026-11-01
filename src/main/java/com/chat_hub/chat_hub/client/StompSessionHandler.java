@@ -20,6 +20,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
     // This method is called when the STOMP session is successfully connected. It can be used to perform any necessary setup or initialization after the connection is established.
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Connected to WebSocket server as user: " + userName);
+        session.send("/app/connect", userName); // This line sends a message to the "/app/connect" destination on the WebSocket server, indicating that the user has connected.
 
         session.subscribe("/topic/messages", new StompFrameHandler() {
             @Override

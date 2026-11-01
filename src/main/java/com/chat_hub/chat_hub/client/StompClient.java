@@ -12,6 +12,8 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import com.chat_hub.chat_hub.model.Message;
+
 import lombok.Data;
 
 @Data 
@@ -37,5 +39,25 @@ public class StompClient {
         // This line connects the STOMP client to the WebSocket server at the specified URL and
         String url = "ws://localhost:8080/ws";
         session = stompClient.connectAsync(url, sessionHandler).get();
+    }
+
+    public void sendMessage(Message message) {
+        try {
+            // This line sends the specified message to the "/app/message" destination on the WebSocket server.
+            session.send("/app/message", message);
+            System.out.println("Sent message from WebSocket server as user: " + message.getUser() + ": " + message.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnectUser(String userName) {
+        try {
+            // This line sends a message to the "/app/disconnect" destination on the WebSocket server, indicating that the user is disconnecting.
+            session.send("/app/disconnect", userName);
+            System.out.println("Disconnected from WebSocket server as user: " + userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
