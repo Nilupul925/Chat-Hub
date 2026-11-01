@@ -19,6 +19,8 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     // This method is called when the STOMP session is successfully connected. It can be used to perform any necessary setup or initialization after the connection is established.
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+        System.out.println("Connected to WebSocket server as user: " + userName);
+
         session.subscribe("/topic/messages", new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -39,6 +41,8 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                 }
             }
         });
+
+        System.out.println("Client Subscribe to /topic/messages");
     }
 
     @Override 
