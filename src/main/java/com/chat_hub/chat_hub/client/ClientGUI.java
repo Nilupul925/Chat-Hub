@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class ClientGUI extends JFrame{
-    private JPanel connectedUsersPanel;
+    private JPanel connectedUsersPanel, messagePanel;
 
     public ClientGUI(String userName) {
         super("User: " + userName);
@@ -37,6 +37,27 @@ public class ClientGUI extends JFrame{
 
     private void addGuiComponents() {
         addConnectedUsersComponent();
+        addChatAreaComponent();
+    }
+
+    private void addChatAreaComponent() {
+        JPanel chatPanel = new JPanel();
+        chatPanel.setLayout(new BorderLayout());
+        chatPanel.setBackground(Utilities.TRANSPARENT_COLOR);
+        
+        messagePanel = new JPanel();
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+        messagePanel.setBackground(Utilities.TRANSPARENT_COLOR);
+
+        //To test
+        JLabel message = new JLabel("Random Message");
+        message.setFont(new Font("Inter", Font.BOLD, 16));
+        message.setForeground(Utilities.TEXT_COLOR);
+        messagePanel.add(message);
+
+        chatPanel.add(messagePanel, BorderLayout.CENTER);
+
+        add(chatPanel, BorderLayout.CENTER);
     }
 
     private void addConnectedUsersComponent() {
