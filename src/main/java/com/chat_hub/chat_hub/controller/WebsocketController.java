@@ -4,6 +4,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import com.chat_hub.chat_hub.model.Message;
+
 @Controller
 public class WebsocketController {
     // This field is used to send messages to clients connected to the WebSocket server.
@@ -15,6 +17,7 @@ public class WebsocketController {
 
     @MessageMapping ("/message") // This annotation maps incoming messages to this method. When a message is sent to the "/app/message" destination, this method will be invoked.
     public void handleMessage(Message message) {
+        //This for debugging purposes
         System.out.println("Received message user: " + message.getUser() + ": " + message.getMessage());
 
         messagingTemplate.convertAndSend("/topic/messages", message); // This line sends the received message to all clients subscribed to the "/topic/messages" destination.
