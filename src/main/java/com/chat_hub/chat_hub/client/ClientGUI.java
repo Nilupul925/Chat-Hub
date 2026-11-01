@@ -1,12 +1,20 @@
 package com.chat_hub.chat_hub.client;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class ClientGUI extends JFrame{
+    private JPanel connectedUsersPanel;
+
     public ClientGUI(String userName) {
         super("User: " + userName);
 
@@ -22,5 +30,27 @@ public class ClientGUI extends JFrame{
                 }
             }
         });
+
+        getContentPane().setBackground(Utilities.PRIMARY_COLOR);
+        addGuiComponents();
+    }
+
+    private void addGuiComponents() {
+        addConnectedUsersComponent();
+    }
+
+    private void addConnectedUsersComponent() {
+        connectedUsersPanel = new JPanel();
+        connectedUsersPanel.setLayout(new BoxLayout(connectedUsersPanel, BoxLayout.Y_AXIS));
+        connectedUsersPanel.setBackground(Utilities.SECONDARY_COLOR);
+        connectedUsersPanel.setPreferredSize(new Dimension(200, getHeight()));
+
+        JLabel connectedUsersLabel = new JLabel("Connected Users");
+        connectedUsersLabel.setFont(new Font("Inter", Font.BOLD, 16));
+        connectedUsersLabel.setForeground(Utilities.TEXT_COLOR);
+
+        connectedUsersPanel.add(connectedUsersLabel);
+
+        add(connectedUsersPanel, BorderLayout.WEST);
     }
 }
