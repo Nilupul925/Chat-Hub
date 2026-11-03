@@ -9,7 +9,7 @@ public class App {
         SwingUtilities.invokeLater(new Runnable(){
             @Override
             public void run(){
-                String userName = "TestUser"; // Replace with actual user name input
+                String userName = "TestUser_1"; // Replace with actual user name input
                 ClientGUI clientGUI = null;
                 try {
                     clientGUI = new ClientGUI(userName);

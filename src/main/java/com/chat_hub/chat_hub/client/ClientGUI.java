@@ -74,13 +74,14 @@ public class ClientGUI extends JFrame{
                 if(e.getKeyChar() == KeyEvent.VK_ENTER) {
                     String message = messageInputField.getText();
                     if(!message.isEmpty()) {
-                        messagePanel.add(createChatMessageComponent(new Message("User_1", message)));
+                        messagePanel.add(createChatMessageComponent(new Message(userName, message)));
                         messageInputField.setText("");
                         
                         //Refresh the fields
                         revalidate();
                         repaint();
 
+                        stompClient.sendMessage(new Message(userName, message));
                     }
                 }
             }
