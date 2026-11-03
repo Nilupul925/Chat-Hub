@@ -86,8 +86,10 @@ public class ClientGUI extends JFrame{
                 }
             }
         });
-        messageInputField.setBackground(Utilities.SECONDARY_COLOR);
-        messageInputField.setForeground(Utilities.TEXT_COLOR);
+
+        messageInputField.setBorder(Utilities.addPadding(10, 10, 10, 10));
+        messageInputField.setBackground(Utilities.THERID_COLOR);
+        messageInputField.setForeground(Utilities.TEXT_COLOR_INPUT);
         messageInputField.setFont(new Font("Inter", Font.PLAIN, 16));
         messageInputField.setPreferredSize(new Dimension(getWidth(), 40));
 
