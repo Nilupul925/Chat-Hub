@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -19,9 +20,13 @@ import com.chat_hub.chat_hub.model.Message;
 
 public class ClientGUI extends JFrame{
     private JPanel connectedUsersPanel, messagePanel;
+    private StompClient stompClient;
+    private String userName;
 
-    public ClientGUI(String userName) {
+    public ClientGUI(String userName) throws InterruptedException, ExecutionException {
         super("User: " + userName);
+        this.userName = userName;
+        stompClient = new StompClient(userName);
 
         setSize(1000, 500);
         setLocationRelativeTo(null);
@@ -30,7 +35,9 @@ public class ClientGUI extends JFrame{
             @Override
             public void windowClosing(WindowEvent e) {
                 int option = JOptionPane.showConfirmDialog(ClientGUI.this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
+                
                 if (option == JOptionPane.YES_OPTION) {
+                    stompClient.disconnectUser(userName);
                     ClientGUI.this.dispose();
                 }
             }
@@ -69,8 +76,11 @@ public class ClientGUI extends JFrame{
                     if(!message.isEmpty()) {
                         messagePanel.add(createChatMessageComponent(new Message("User_1", message)));
                         messageInputField.setText("");
+                        
+                        //Refresh the fields
                         revalidate();
                         repaint();
+
                     }
                 }
             }
