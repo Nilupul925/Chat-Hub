@@ -1,8 +1,11 @@
 package com.chat_hub.chat_hub.client;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -39,12 +42,20 @@ public class ClientGUI extends JFrame implements MessageListener {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int option = JOptionPane.showConfirmDialog(ClientGUI.this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
-                
+                int option = JOptionPane.showConfirmDialog(ClientGUI.this, "Are you sure you want to exit?", "Exit",
+                        JOptionPane.YES_NO_OPTION);
+
                 if (option == JOptionPane.YES_OPTION) {
                     stompClient.disconnectUser(userName);
                     ClientGUI.this.dispose();
                 }
+            }
+        });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                updateMessageLabelWidths();
             }
         });
 
@@ -62,7 +73,7 @@ public class ClientGUI extends JFrame implements MessageListener {
         chatPanel.setBorder(Utilities.addPadding(10, 10, 10, 10));
         chatPanel.setLayout(new BorderLayout());
         chatPanel.setBackground(Utilities.TRANSPARENT_COLOR);
-        
+
         messagePanel = new JPanel();
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
         messagePanel.setBackground(Utilities.TRANSPARENT_COLOR);
@@ -87,13 +98,12 @@ public class ClientGUI extends JFrame implements MessageListener {
         JTextField messageInputField = new JTextField();
         messageInputField.addKeyListener(new KeyAdapter() {
 
-            @Override 
+            @Override
             public void keyTyped(KeyEvent e) {
-                if(e.getKeyChar() == KeyEvent.VK_ENTER) {
+                if (e.getKeyChar() == KeyEvent.VK_ENTER) {
                     String message = messageInputField.getText();
-                    if(!message.isEmpty()) {
+                    if (!message.isEmpty()) {
                         messageInputField.setText("");
- 
 
                         stompClient.sendMessage(new Message(userName, message));
                     }
@@ -142,7 +152,11 @@ public class ClientGUI extends JFrame implements MessageListener {
         userNameLable.setForeground(Utilities.TEXT_COLOR);
         chatMessage.add(userNameLable);
 
-        JLabel messageLable = new JLabel(message.getMessage());
+        JLabel messageLable = new JLabel();
+        // This line sets the text of the message label to the message content, wrapped
+        // in HTML to allow for word wrapping and a maximum width of 400 pixels.
+        messageLable.setText("<html>" + "<body style='width:" + (0.60 * getWidth()) + "'px>" + message.getMessage()
+                + "</body>" + "</html>");
         messageLable.setFont(new Font("Inter", Font.PLAIN, 18));
         messageLable.setForeground(Utilities.TEXT_COLOR);
         chatMessage.add(messageLable);
@@ -155,11 +169,13 @@ public class ClientGUI extends JFrame implements MessageListener {
         messagePanel.add(createChatMessageComponent(message));
         revalidate();
         repaint();
+
+        messageScrollPane.getVerticalScrollBar().setValue(Integer.MAX_VALUE);
     }
 
     @Override
     public void onActiveUsersUpdated(ArrayList<String> activeUsers) {
-        if(connectedUsersPanel.getComponentCount() > 3) {
+        if (connectedUsersPanel.getComponentCount() > 3) {
             connectedUsersPanel.remove(1);
         }
 
@@ -178,5 +194,23 @@ public class ClientGUI extends JFrame implements MessageListener {
 
         revalidate();
         repaint();
+    }
+
+    private void updateMessageLabelWidths() {
+        for (int i = 0; i < messagePanel.getComponents().length; i++) {
+            Component component = messagePanel.getComponent(i);
+
+            if (component instanceof JPanel) {
+
+                JPanel chatMessage = (JPanel) component;
+
+                if (chatMessage.getComponent(1) instanceof JLabel) {
+                    JLabel messageLabel = (JLabel) chatMessage.getComponent(1);
+                    messageLabel.setText("<html>" + "<body style='width:" + (0.60 * getWidth()) + "'px>"
+                            + messageLabel.getText()
+                            + "</body>" + "</html>");
+                }
+            }
+        }
     }
 }
