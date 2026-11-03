@@ -135,12 +135,31 @@ public class ClientGUI extends JFrame implements MessageListener {
 
     @Override
     public void onMessageReceived(Message message) {
-        System.out.println("On message received: ");
+        messagePanel.add(createChatMessageComponent(message));
+        revalidate();
+        repaint();
     }
 
     @Override
     public void onActiveUsersUpdated(ArrayList<String> activeUsers) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onActiveUsersUpdated'");
+        if(connectedUsersPanel.getComponentCount() > 3) {
+            connectedUsersPanel.remove(1);
+        }
+
+        JPanel connectedUsersLabelPanel = new JPanel();
+        connectedUsersLabelPanel.setBackground(Utilities.TRANSPARENT_COLOR);
+        connectedUsersLabelPanel.setLayout(new BoxLayout(connectedUsersLabelPanel, BoxLayout.Y_AXIS));
+
+        for (String user : activeUsers) {
+            JLabel userLabel = new JLabel();
+            userLabel.setText(user);
+            userLabel.setFont(new Font("Inter", Font.PLAIN, 16));
+            userLabel.setForeground(Utilities.TEXT_COLOR);
+            connectedUsersLabelPanel.add(userLabel);
+        }
+        connectedUsersPanel.add(connectedUsersLabelPanel);
+
+        revalidate();
+        repaint();
     }
 }
