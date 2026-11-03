@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import com.chat_hub.chat_hub.model.Message;
@@ -23,6 +24,7 @@ public class ClientGUI extends JFrame implements MessageListener {
     private JPanel connectedUsersPanel, messagePanel;
     private StompClient stompClient;
     private String userName;
+    private JScrollPane messageScrollPane;
 
     public ClientGUI(String userName) throws InterruptedException, ExecutionException {
         super("User: " + userName);
@@ -63,6 +65,12 @@ public class ClientGUI extends JFrame implements MessageListener {
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
         messagePanel.setBackground(Utilities.TRANSPARENT_COLOR);
 
+        messageScrollPane = new JScrollPane(messagePanel);
+        messageScrollPane.setBackground(Utilities.TRANSPARENT_COLOR);
+        messageScrollPane.setBorder(Utilities.addPadding(10, 10, 10, 10));
+        messageScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        messageScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
         inputPanel.setBackground(Utilities.SECONDARY_COLOR);
@@ -92,7 +100,7 @@ public class ClientGUI extends JFrame implements MessageListener {
 
         inputPanel.add(messageInputField, BorderLayout.CENTER);
 
-        chatPanel.add(messagePanel, BorderLayout.CENTER);
+        chatPanel.add(messageScrollPane, BorderLayout.CENTER);
         chatPanel.add(inputPanel, BorderLayout.SOUTH);
 
         add(chatPanel, BorderLayout.CENTER);
