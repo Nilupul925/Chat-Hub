@@ -3,6 +3,8 @@ package com.chat_hub.chat_hub.client;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -12,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.chat_hub.chat_hub.model.Message;
 
 public class ClientGUI extends JFrame{
     private JPanel connectedUsersPanel, messagePanel;
@@ -43,6 +47,7 @@ public class ClientGUI extends JFrame{
 
     private void addChatAreaComponent() {
         JPanel chatPanel = new JPanel();
+        chatPanel.setBorder(Utilities.addPadding(10, 10, 10, 10));
         chatPanel.setLayout(new BorderLayout());
         chatPanel.setBackground(Utilities.TRANSPARENT_COLOR);
         
@@ -50,17 +55,26 @@ public class ClientGUI extends JFrame{
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
         messagePanel.setBackground(Utilities.TRANSPARENT_COLOR);
 
-        //To test
-        JLabel message = new JLabel("Random Message");
-        message.setFont(new Font("Inter", Font.BOLD, 16));
-        message.setForeground(Utilities.TEXT_COLOR);
-        messagePanel.add(message);
-
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
         inputPanel.setBackground(Utilities.SECONDARY_COLOR);
 
         JTextField messageInputField = new JTextField();
+        messageInputField.addKeyListener(new KeyAdapter() {
+
+            @Override 
+            public void keyTyped(KeyEvent e) {
+                if(e.getKeyChar() == KeyEvent.VK_ENTER) {
+                    String message = messageInputField.getText();
+                    if(!message.isEmpty()) {
+                        messagePanel.add(createChatMessageComponent(new Message("User_1", message)));
+                        messageInputField.setText("");
+                        revalidate();
+                        repaint();
+                    }
+                }
+            }
+        });
         messageInputField.setBackground(Utilities.SECONDARY_COLOR);
         messageInputField.setForeground(Utilities.TEXT_COLOR);
         messageInputField.setFont(new Font("Inter", Font.PLAIN, 16));
@@ -76,6 +90,7 @@ public class ClientGUI extends JFrame{
 
     private void addConnectedUsersComponent() {
         connectedUsersPanel = new JPanel();
+        connectedUsersPanel.setBorder(Utilities.addPadding(10, 10, 10, 10));
         connectedUsersPanel.setLayout(new BoxLayout(connectedUsersPanel, BoxLayout.Y_AXIS));
         connectedUsersPanel.setBackground(Utilities.SECONDARY_COLOR);
         connectedUsersPanel.setPreferredSize(new Dimension(200, getHeight()));
@@ -87,5 +102,24 @@ public class ClientGUI extends JFrame{
         connectedUsersPanel.add(connectedUsersLabel);
 
         add(connectedUsersPanel, BorderLayout.WEST);
+    }
+
+    private JPanel createChatMessageComponent(Message message) {
+        JPanel chatMessage = new JPanel();
+        chatMessage.setBackground(Utilities.TRANSPARENT_COLOR);
+        chatMessage.setLayout(new BoxLayout(chatMessage, BoxLayout.Y_AXIS));
+        chatMessage.setBorder(Utilities.addPadding(10, 10, 10, 10));
+
+        JLabel userNameLable = new JLabel(message.getUser());
+        userNameLable.setFont(new Font("Inter", Font.BOLD, 18));
+        userNameLable.setForeground(Utilities.TEXT_COLOR);
+        chatMessage.add(userNameLable);
+
+        JLabel messageLable = new JLabel(message.getMessage());
+        messageLable.setFont(new Font("Inter", Font.PLAIN, 18));
+        messageLable.setForeground(Utilities.TEXT_COLOR);
+        chatMessage.add(messageLable);
+
+        return chatMessage;
     }
 }
