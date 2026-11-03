@@ -22,7 +22,7 @@ public class StompClient {
     private StompSession session;
     private String userName;
 
-    public StompClient(String userName) throws InterruptedException, ExecutionException {
+    public StompClient(MessageListener messageListener, String userName) throws InterruptedException, ExecutionException {
         this.userName = userName;
 
         List<Transport> transports = new ArrayList<>();
@@ -35,7 +35,7 @@ public class StompClient {
         // This line sets the message converter for the STOMP client to use Jackson for JSON serialization and deserialization.
         stompClient.setMessageConverter(new JacksonJsonMessageConverter());
 
-        StompSessionHandler sessionHandler = new StompSessionHandler(userName);
+        StompSessionHandler sessionHandler = new StompSessionHandler(messageListener, userName);
         // This line connects the STOMP client to the WebSocket server at the specified URL and
         String url = "ws://localhost:8080/ws";
         session = stompClient.connectAsync(url, sessionHandler).get();

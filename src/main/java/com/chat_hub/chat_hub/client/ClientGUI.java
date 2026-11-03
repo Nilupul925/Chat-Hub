@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.BoxLayout;
@@ -18,7 +19,7 @@ import javax.swing.JTextField;
 
 import com.chat_hub.chat_hub.model.Message;
 
-public class ClientGUI extends JFrame{
+public class ClientGUI extends JFrame implements MessageListener {
     private JPanel connectedUsersPanel, messagePanel;
     private StompClient stompClient;
     private String userName;
@@ -26,7 +27,7 @@ public class ClientGUI extends JFrame{
     public ClientGUI(String userName) throws InterruptedException, ExecutionException {
         super("User: " + userName);
         this.userName = userName;
-        stompClient = new StompClient(userName);
+        stompClient = new StompClient(this, userName);
 
         setSize(1000, 500);
         setLocationRelativeTo(null);
@@ -74,12 +75,8 @@ public class ClientGUI extends JFrame{
                 if(e.getKeyChar() == KeyEvent.VK_ENTER) {
                     String message = messageInputField.getText();
                     if(!message.isEmpty()) {
-                        messagePanel.add(createChatMessageComponent(new Message(userName, message)));
                         messageInputField.setText("");
-                        
-                        //Refresh the fields
-                        revalidate();
-                        repaint();
+ 
 
                         stompClient.sendMessage(new Message(userName, message));
                     }
@@ -134,5 +131,16 @@ public class ClientGUI extends JFrame{
         chatMessage.add(messageLable);
 
         return chatMessage;
+    }
+
+    @Override
+    public void onMessageReceived(Message message) {
+        System.out.println("On message received: ");
+    }
+
+    @Override
+    public void onActiveUsersUpdated(ArrayList<String> activeUsers) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onActiveUsersUpdated'");
     }
 }

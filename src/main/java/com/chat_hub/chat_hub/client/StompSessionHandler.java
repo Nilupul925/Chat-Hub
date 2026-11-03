@@ -11,8 +11,10 @@ import com.chat_hub.chat_hub.model.Message;
 
 public class StompSessionHandler extends StompSessionHandlerAdapter {
     private String userName;
+    private MessageListener messageListener;
 
-    public StompSessionHandler(String userName) {
+    public StompSessionHandler(MessageListener messageListener, String userName) {
+        this.messageListener = messageListener;
         this.userName = userName;
     }
 
@@ -25,6 +27,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
         session.subscribe("/topic/messages", new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
+                messageListener.onMessageReceived(new Message("Nilupul", "Hello"));
                 return Message.class; // This line specifies that the payload of the incoming messages will be of type Message.
             }
 
