@@ -25,8 +25,6 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
     // connection is established.
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Connected to WebSocket server as user: " + userName);
-        session.send("/app/connect", userName); // This line sends a message to the "/app/connect" destination on the
-                                                // WebSocket server, indicating that the user has connected.
 
         session.subscribe("/topic/messages", new StompFrameHandler() {
             @Override
@@ -80,6 +78,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
 
         System.out.println("Subscribed to /topic/activeUsers");
 
+        session.send("/app/connect", userName); // This line sends a message to the "/app/connect" destination on the WebSocket server, indicating that the user has connected.
         session.send("/app/request-activeUsers", ""); // This line sends a message to the "/app/request-activeUsers" destination on the WebSocket server, requesting the list of active users.
     }
 

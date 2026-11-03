@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.chat_hub.chat_hub.model.Message;
 
@@ -70,6 +72,13 @@ public class ClientGUI extends JFrame implements MessageListener {
         messageScrollPane.setBorder(Utilities.addPadding(10, 10, 10, 10));
         messageScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messageScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        messageScrollPane.getViewport().addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                revalidate();
+                repaint();
+            }
+        });
 
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
