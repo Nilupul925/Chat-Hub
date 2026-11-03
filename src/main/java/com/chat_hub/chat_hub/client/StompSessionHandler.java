@@ -79,6 +79,8 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
         });
 
         System.out.println("Subscribed to /topic/activeUsers");
+
+        session.send("/app/request-activeUsers", ""); // This line sends a message to the "/app/request-activeUsers" destination on the WebSocket server, requesting the list of active users.
     }
 
     @Override

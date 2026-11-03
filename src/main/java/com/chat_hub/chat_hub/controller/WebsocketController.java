@@ -41,4 +41,10 @@ public class WebsocketController {
         sessionManager.broadcastActiveUserNames(); // This line broadcasts the updated list of active user names to all clients subscribed to the "/topic/activeUsers" destination.
         System.out.println(userName + " disconnected");
     }
+
+    @MessageMapping ("/request-activeUsers") // This annotation maps incoming messages to this method. When a message is sent to the "/app/activeUsers" destination, this method will be invoked.
+    public void requestActiveUsers() {
+        sessionManager.broadcastActiveUserNames();
+        System.out.println("Requesting Users");
+    }
 }
