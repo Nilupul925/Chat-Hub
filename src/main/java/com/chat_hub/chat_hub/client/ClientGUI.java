@@ -82,6 +82,7 @@ public class ClientGUI extends JFrame implements MessageListener {
         messageScrollPane.setBackground(Utilities.TRANSPARENT_COLOR);
         messageScrollPane.setBorder(Utilities.addPadding(10, 10, 10, 10));
         messageScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        messageScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         messageScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         messageScrollPane.getViewport().addChangeListener(new ChangeListener() {
             @Override
@@ -153,15 +154,26 @@ public class ClientGUI extends JFrame implements MessageListener {
         chatMessage.add(userNameLable);
 
         JLabel messageLable = new JLabel();
+        messageLable.putClientProperty("originalMessage", message.getMessage());
         // This line sets the text of the message label to the message content, wrapped
         // in HTML to allow for word wrapping and a maximum width of 400 pixels.
-        messageLable.setText("<html>" + "<body style='width:" + (0.60 * getWidth()) + "'px>" + message.getMessage()
-                + "</body>" + "</html>");
+        messageLable.setText(formatWrappedMessageHtml(message.getMessage()));
         messageLable.setFont(new Font("Inter", Font.PLAIN, 18));
         messageLable.setForeground(Utilities.TEXT_COLOR);
         chatMessage.add(messageLable);
 
         return chatMessage;
+    }
+
+    private String formatWrappedMessageHtml(String rawMessage) {
+        int wrapWidth = Math.max(150, (int) (0.50 * getWidth()));
+        int maxWordChars = Math.max(10, wrapWidth / 10);
+        String safeMessage = rawMessage == null ? "" : rawMessage
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replaceAll("(\\S{" + maxWordChars + "})(?=\\S)", "$1<br>");
+        return "<html><body style='width:" + wrapWidth + "px'>" + safeMessage + "</body></html>";
     }
 
     @Override
@@ -204,13 +216,17 @@ public class ClientGUI extends JFrame implements MessageListener {
 
                 JPanel chatMessage = (JPanel) component;
 
-                if (chatMessage.getComponent(1) instanceof JLabel) {
+                if (chatMessage.getComponentCount() > 1 && chatMessage.getComponent(1) instanceof JLabel) {
                     JLabel messageLabel = (JLabel) chatMessage.getComponent(1);
-                    messageLabel.setText("<html>" + "<body style='width:" + (0.60 * getWidth()) + "'px>"
-                            + messageLabel.getText()
-                            + "</body>" + "</html>");
+                    Object originalMessage = messageLabel.getClientProperty("originalMessage");
+                    String rawText = originalMessage != null
+                            ? originalMessage.toString()
+                            : messageLabel.getText().replaceAll("<html><body style='width:.*?px'>", "").replaceAll("</body></html>", "");
+                    messageLabel.setText(formatWrappedMessageHtml(rawText));
                 }
             }
         }
+        messagePanel.revalidate();
+        messagePanel.repaint();
     }
 }
